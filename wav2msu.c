@@ -1,4 +1,5 @@
 // Copyright (c) 2011 Johannes Baiter <johannes.baiter@gmail.com>
+// Based on C# code by Kawa <http://helmet.kafuka.org/thepile/Wav2msu>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
@@ -52,7 +53,8 @@ void print_help() {
         );
 }
 
-// Checks a Wavefile for compliance with the MSU1-specifications
+// Checks a Wavefile for compliance with the MSU1-specifications[1]
+//   [1] http://board.byuu.org/viewtopic.php?f=16&t=947
 int32_t validate(FILE *ifp) {
     int riff_header;
     fread(&riff_header, sizeof(riff_header), 1, ifp);
@@ -98,7 +100,7 @@ int32_t validate(FILE *ifp) {
     fread(&bits_per_sample, sizeof(bits_per_sample), 1, ifp);
     if (channels != 2 || sample_rate != 44100 || bits_per_sample != 16) {
         fprintf(stderr, "wav2msu: Not in 16bit 44.1kHz stereo!\n");
-        fprintf(stderr, "         Got instead: %dch, %dHz, %dbps\n", channels, sample_rate, bits_per_sample);
+        fprintf(stderr, "         Got instead: %dbit, %dHz, %dch\n", bits_per_sample, sample_rate, channels);
         return -1;
     }
 
@@ -162,16 +164,17 @@ int main(int argc, char *argv[]) {
         }
     if (optind == argc) {
         print_help();
-        exit(1);
+        exit(0);
     } else if (argc - optind > 1) {
         fprintf(stderr, "Too many input files.\n");
         print_usage();
+        exit(1);
     } else {
         if (*argv[argc-1] == '-') {
             fprintf(stderr, "Reading from stdin.\n");
             infile = stdin;
-	    // We need to switch stdin to binary mode, or else we run
-	    // into problems under Windows
+            // We need to switch stdin to binary mode, or else we run
+            // into problems under Windows
             #ifdef WIN32
                 _setmode(fileno(stdin), _O_BINARY);
             #endif
