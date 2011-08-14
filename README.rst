@@ -31,5 +31,5 @@ Examples:
 Copyright
 ---------
 Licensed under the terms of the MIT license (see source for details).
-(c) 2011 Johannes Baiter <johannes.baiter@web.de>
+(c) 2011 Johannes Baiter <johannes.baiter@gmail.com>
 Based on C# code by Kawa <http://helmet.kafuka.org/thepile/Wav2msu>
